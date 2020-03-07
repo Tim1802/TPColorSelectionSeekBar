@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TPColorSelectionSeekBar">
+        <attr name="thumbBorderColor" format="color"/>
+        <attr name="thumbFillColor" format="color" />
+
+        <attr name="colorBarCornerRadius" format="dimension"/>
+        <attr name="colorBarBorderColor" format="color" />
+        <attr name="colorBarHeight" format="dimension" />
+        <attr name="colorBarColors" format="reference"/>
+    </declare-styleable>
+</resources>
