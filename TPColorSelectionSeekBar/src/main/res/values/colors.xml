@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="barBorderColor">#0023FF</color>
+    <color name="thumbBorderColor">#FF0000</color>
+    <color name="thumbFillColor">#FFEE00</color>
+
+    <array name="barColors">
+        <item name="1">#0023FF</item>
+        <item name="2">#FF0000</item>
+        <item name="3">#FFEE00</item>
+    </array>
+</resources>

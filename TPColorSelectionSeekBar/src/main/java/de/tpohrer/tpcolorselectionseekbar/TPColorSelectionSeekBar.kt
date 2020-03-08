@@ -118,7 +118,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
                 currentColor = calculateColor(thumbXPos)
 
-                selectedColorChangedListener?.onSelectedColorChanged(currentColor)
+                selectedColorChangedListener?.onSelectedColorChanged(currentColor, id)
 
                 invalidate()
 
@@ -209,7 +209,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         currentColor = color
         thumbXPos = xPos
 
-        if (callListener) selectedColorChangedListener?.onSelectedColorChanged(currentColor)
+        if (callListener) selectedColorChangedListener?.onSelectedColorChanged(currentColor, id)
 
         invalidate()
     }
@@ -266,7 +266,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     }
 
     interface ISelectedColorChangedListener {
-        fun onSelectedColorChanged(color: Int)
+        fun onSelectedColorChanged(color: Int, viewId : Int)
     }
 }
 
