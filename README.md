@@ -55,6 +55,11 @@ colorBar.setColorSelectionChangedListener(object: TPColorSelectionSeekBar.ISelec
 ```
 <b>Check out the sample project if you need help or get stuck!</b>
 
+# What's next?
+
+| Version        | Feature(s)                        |
+| :-------------:|:---------------------------------:| 
+| 2.0.0          | Possibility to select alpha value | 
 
 # Licence
 ```
