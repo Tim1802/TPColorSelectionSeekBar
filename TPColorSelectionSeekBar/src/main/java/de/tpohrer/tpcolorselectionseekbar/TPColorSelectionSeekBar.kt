@@ -2,6 +2,8 @@ package de.tpohrer.tpcolorselectionseekbar
 
 import android.content.Context
 import android.graphics.*
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -89,6 +91,28 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         thumbPaintBorder.style = Paint.Style.STROKE
         thumbPaintBorder.strokeWidth = 4f
         thumbPaintBorder.color = thumbBorderColor
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val bundle = Bundle()
+
+        bundle.putParcelable(KEY_STATE_SUPER, super.onSaveInstanceState())
+        bundle.putInt(KEY_STATE_COLOR, currentColor)
+
+        return bundle
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        var newState = state
+
+        if(state is Bundle) {
+            newState = state.getParcelable(KEY_STATE_SUPER)
+
+            val newColor = state.getInt(KEY_STATE_COLOR)
+            setColor(newColor)
+        }
+
+        super.onRestoreInstanceState(newState)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -266,7 +290,12 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     }
 
     interface ISelectedColorChangedListener {
-        fun onSelectedColorChanged(color: Int, viewId : Int)
+        fun onSelectedColorChanged(color: Int, viewId: Int)
+    }
+
+    companion object {
+        const val KEY_STATE_SUPER = "stateSuper"
+        const val KEY_STATE_COLOR = "stateColor"
     }
 }
 
