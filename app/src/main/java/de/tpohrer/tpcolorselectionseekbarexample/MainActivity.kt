@@ -2,6 +2,7 @@ package de.tpohrer.tpcolorselectionseekbarexample
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import de.tpohrer.tpcolorselectionseekbar.TPColorSelectionSeekBar
 
@@ -10,6 +11,7 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
     private lateinit var barCustomized: TPColorSelectionSeekBar
     private lateinit var viewDefault: View
     private lateinit var viewCustomized: View
+    private lateinit var buttonSheet: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +29,11 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
         barCustomized.setColorSelectionChangedListener(this)
 
         onSelectedColorChanged(barCustomized.getCurrentColor(), barCustomized.id)
+
+        buttonSheet = findViewById(R.id.buttonShowSheet)
+        buttonSheet.setOnClickListener {
+            showBottomSheet()
+        }
     }
 
     override fun onSelectedColorChanged(color: Int, viewId: Int) {
@@ -34,5 +41,12 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
             R.id.colorBarDefault -> viewDefault.setBackgroundColor(color)
             R.id.colorBarCustomized -> viewCustomized.setBackgroundColor(color)
         }
+    }
+
+    private fun showBottomSheet() {
+        val fragmentManager = supportFragmentManager ?: return
+
+        val sheet = BottomSheet()
+        sheet.show(fragmentManager, "bottomSheet")
     }
 }

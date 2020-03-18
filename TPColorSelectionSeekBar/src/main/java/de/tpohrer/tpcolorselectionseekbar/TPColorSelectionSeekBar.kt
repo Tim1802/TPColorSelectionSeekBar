@@ -133,6 +133,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
         when (event?.action) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                parent.requestDisallowInterceptTouchEvent(true)
 
                 var newXPos = event.x
                 if (newXPos < padding) newXPos = padding
