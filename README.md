@@ -21,7 +21,7 @@ Add the dependency:
 ```gradle
 dependencies {
     //All your other dependencies ...
-    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v1.0.0'
+    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v1.2.0'
 }
 ```
 # Usage
