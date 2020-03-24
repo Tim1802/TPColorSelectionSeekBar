@@ -8,8 +8,10 @@ import de.tpohrer.tpcolorselectionseekbar.TPColorSelectionSeekBar
 
 class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColorChangedListener {
     private lateinit var barDefault: TPColorSelectionSeekBar
+    private lateinit var barDefaultAlpha: TPColorSelectionSeekBar
     private lateinit var barCustomized: TPColorSelectionSeekBar
     private lateinit var viewDefault: View
+    private lateinit var viewDefaultAlpha: View
     private lateinit var viewCustomized: View
     private lateinit var buttonSheet: Button
 
@@ -19,6 +21,7 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
 
         viewDefault = findViewById(R.id.viewDefault)
         viewCustomized = findViewById(R.id.viewCustomized)
+        viewDefaultAlpha = findViewById(R.id.viewDefaultAlpha)
 
         barDefault = findViewById(R.id.colorBarDefault)
         barDefault.setColorSelectionChangedListener(this)
@@ -30,6 +33,11 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
 
         onSelectedColorChanged(barCustomized.getCurrentColor(), barCustomized.id)
 
+        barDefaultAlpha = findViewById(R.id.colorBarDefaultAlpha)
+        barDefaultAlpha.setColorSelectionChangedListener(this)
+
+        onSelectedColorChanged(barDefaultAlpha.getCurrentColor(), barDefaultAlpha.id)
+
         buttonSheet = findViewById(R.id.buttonShowSheet)
         buttonSheet.setOnClickListener {
             showBottomSheet()
@@ -40,11 +48,12 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
         when(viewId) {
             R.id.colorBarDefault -> viewDefault.setBackgroundColor(color)
             R.id.colorBarCustomized -> viewCustomized.setBackgroundColor(color)
+            R.id.colorBarDefaultAlpha -> viewDefaultAlpha.setBackgroundColor(color)
         }
     }
 
     private fun showBottomSheet() {
-        val fragmentManager = supportFragmentManager ?: return
+        val fragmentManager = supportFragmentManager
 
         val sheet = BottomSheet()
         sheet.show(fragmentManager, "bottomSheet")

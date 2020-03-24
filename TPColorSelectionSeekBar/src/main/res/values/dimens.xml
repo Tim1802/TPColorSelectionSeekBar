@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="barHeight">32dp</dimen>
-    <dimen name="barCornerRadius">32dp</dimen>
-</resources>

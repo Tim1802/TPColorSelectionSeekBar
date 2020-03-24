@@ -8,5 +8,7 @@
         <attr name="colorBarBorderColor" format="color" />
         <attr name="colorBarHeight" format="dimension" />
         <attr name="colorBarColors" format="reference"/>
+
+        <attr name="showAlphaBar" format="boolean"/>
     </declare-styleable>
 </resources>

@@ -20,9 +20,26 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     private val colorBarPaint = Paint()
     private val colorBarPaintBorder = Paint()
 
+    private var alphaBarBackgroundBitmap: Bitmap? = null
+    private val alphaBarRect = RectF()
+    private val alphaBarPaint = Paint()
+
     private val thumbPaint = Paint()
     private val thumbPaintBorder = Paint()
     private val thumbPath = Path()
+
+    private var showAlphaBar = false
+        set(value) {
+            if (field != value) {
+                field = value
+                if (field) {
+                    alphaBarBackgroundBitmap = BitmapFactory.decodeResource(
+                        resources,
+                        R.drawable.background_alpha
+                    )
+                }
+            }
+        }
 
     private var colorBarColors = intArrayOf(
         Color.parseColor("#000000"),
@@ -37,7 +54,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         set(value) {
             if (!field.contentEquals(value)) {
                 field = value
-                currentColor = value.first()
+                currentColor = field.first()
             }
         }
 
@@ -47,13 +64,15 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         set(value) {
             if (field != value) {
                 field = value
-                padding = value / 2
+                padding = field / 2
                 thumbXPos = padding
+                alphaThumbXPos = padding
             }
         }
 
     private var padding = colorBarHeight / 2
     private var thumbXPos = padding
+    private var alphaThumbXPos = padding
 
     private var colorBarCornerRadius = 0f
     private var selectedColorChangedListener: ISelectedColorChangedListener? = null
@@ -65,6 +84,8 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
         attributeSet?.let {
             val a = context.obtainStyledAttributes(it, R.styleable.TPColorSelectionSeekBar)
+
+            showAlphaBar = a.getBoolean(R.styleable.TPColorSelectionSeekBar_showAlphaBar, showAlphaBar)
 
             thumbFillColor = a.getColor(R.styleable.TPColorSelectionSeekBar_thumbFillColor, thumbFillColor)
             thumbBorderColor = a.getColor(R.styleable.TPColorSelectionSeekBar_thumbBorderColor, thumbBorderColor)
@@ -105,7 +126,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     override fun onRestoreInstanceState(state: Parcelable?) {
         var newState = state
 
-        if(state is Bundle) {
+        if (state is Bundle) {
             newState = state.getParcelable(KEY_STATE_SUPER)
 
             val newColor = state.getInt(KEY_STATE_COLOR)
@@ -125,45 +146,116 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
         colorBarRect.left = padding
         colorBarRect.right = w - padding
-        colorBarRect.top = h / 2 - colorBarHeight / 2
-        colorBarRect.bottom = h / 2 + colorBarHeight / 2
+        colorBarRect.top = padding
+        colorBarRect.bottom = padding + colorBarHeight
+
+        if (showAlphaBar) {
+            alphaBarRect.left = padding
+            alphaBarRect.right = w - padding
+            alphaBarRect.top = 4 * padding + colorBarHeight
+            alphaBarRect.bottom = 4 * padding + 2 * colorBarHeight
+
+            updateAlphaBarShaderPaint()
+        }
     }
+
+    private fun updateAlphaBarShaderPaint() {
+        if(!showAlphaBar) return
+
+        val rgb = getRGBFromColor(currentColor)
+
+        val r = rgb.first
+        val g = rgb.second
+        val b = rgb.third
+
+        alphaBarPaint.shader = LinearGradient(
+            padding, 0f, width - padding, 0f,
+            intArrayOf(
+                Color.argb(255, r, g, b),
+                Color.argb(0, r, g, b)
+            ),
+            null,
+            Shader.TileMode.MIRROR
+        )
+    }
+
+    private fun getRGBFromColor(color: Int): Triple<Int, Int, Int> {
+        val r = color shr 16 and 0xff
+        val g = color shr 8 and 0xff
+        val b = color and 0xff
+
+        return Triple(r, g, b)
+    }
+
+    private fun getAlphaFromColor(color: Int) : Int {
+        return color shr 24 and 0xff
+    }
+
+    private var isMoveActionForColorBar: Boolean? = null
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
         when (event?.action) {
-            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+            MotionEvent.ACTION_DOWN -> {
                 parent.requestDisallowInterceptTouchEvent(true)
 
-                var newXPos = event.x
-                if (newXPos < padding) newXPos = padding
-                if (newXPos > width - padding) newXPos = width - padding
+                val xPos = event.x
+                val yPos = event.y
 
-                thumbXPos = newXPos
+                isMoveActionForColorBar = when {
+                    colorBarRect.contains(xPos, yPos) -> true
+                    alphaBarRect.contains(xPos, yPos) -> false
+                    else -> null
+                }
 
-                currentColor = calculateColor(thumbXPos)
-
-                selectedColorChangedListener?.onSelectedColorChanged(currentColor, id)
-
-                invalidate()
-
+                updateThumbPosition(xPos)
                 return true
             }
+
+            MotionEvent.ACTION_MOVE -> {
+                parent.requestDisallowInterceptTouchEvent(true)
+
+                val xPos = event.x
+
+                updateThumbPosition(xPos)
+                return true
+            }
+            else -> isMoveActionForColorBar = null
         }
 
         return super.onTouchEvent(event)
     }
 
-    private fun calculateColor(xPos: Float): Int {
-        val xPosAdjusted = xPos - padding
+    private fun updateThumbPosition(xPos: Float) {
+
+        var newXPos = xPos
+        if (newXPos < padding) newXPos = padding
+        if (newXPos > width - padding) newXPos = width - padding
+
+        if (isMoveActionForColorBar == true) {
+            thumbXPos = newXPos
+        } else if (isMoveActionForColorBar == false) {
+            alphaThumbXPos = newXPos
+        }
+
+        currentColor = calculateColor(thumbXPos, alphaThumbXPos)
+
+        if (isMoveActionForColorBar == true) {
+            updateAlphaBarShaderPaint()
+        }
+
+        selectedColorChangedListener?.onSelectedColorChanged(currentColor, id)
+
+        invalidate()
+    }
+
+    private fun calculateColor(xPosColor: Float, xPosAlpha: Float): Int {
+        val xPosAdjusted = xPosColor - padding
         val percentage = xPosAdjusted / colorBarRect.width()
 
-        if (percentage <= 0.0) return colorBarColors.first()
-        if (percentage >= 1.0) return colorBarColors.last()
-
-        var colorFirst = -1
-        var colorSecond = -1
-        var colorPosition = -1
+        var colorFirst = colorBarColors.last()
+        var colorSecond = colorBarColors.last()
+        var colorPosition = colorBarColors.size
 
         for (i in 1 until colorBarColors.size) {
             if (i * (1f / (colorBarColors.size - 1)) > percentage) {
@@ -180,8 +272,16 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         val redFinal = mixColor(Color.red(colorFirst), Color.red(colorSecond), percentageOfFirstColor, percentageOfSecondColor)
         val greenFinal = mixColor(Color.green(colorFirst), Color.green(colorSecond), percentageOfFirstColor, percentageOfSecondColor)
         val blueFinal = mixColor(Color.blue(colorFirst), Color.blue(colorSecond), percentageOfFirstColor, percentageOfSecondColor)
+        var alpha = 255
 
-        return Color.rgb(redFinal, greenFinal, blueFinal)
+        if (showAlphaBar) {
+            val xPosAlphaAdjusted = xPosAlpha - padding
+            val percentageAlpha = 1 - xPosAlphaAdjusted / alphaBarRect.width()
+
+            alpha = (alpha * percentageAlpha).toInt()
+        }
+
+        return Color.argb(alpha, redFinal, greenFinal, blueFinal)
     }
 
     private fun mixColor(c1: Int, c2: Int, percentageOfC1: Float, percentageOfC2: Float): Int {
@@ -193,7 +293,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
      *
      * @return the currently selected color
      */
-    fun getCurrentColor(): Int = currentColor
+    fun getCurrentColor() = currentColor
 
     /**
      * Sets the new color and updates the UI.
@@ -212,12 +312,18 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             var smallestDifferenceXPos = Int.MAX_VALUE
             var smallestDifferenceColor = Int.MAX_VALUE
 
+            var xPosAlpha = alphaThumbXPos
+            if(showAlphaBar) {
+                val alphaPositionPercentage = 1 - getAlphaFromColor(newColor) / 255f
+                xPosAlpha = alphaPositionPercentage * alphaBarRect.width() + start
+            }
+
             for (i in start..end) {
-                val color = calculateColor(i.toFloat())
+                val color = calculateColor(i.toFloat(), xPosAlpha)
                 val difference = colorDifference(color, newColor)
 
                 if (difference == 0) {
-                    setFinalColor(newColor, i.toFloat(), callListener)
+                    setFinalColor(newColor, i.toFloat(), xPosAlpha, callListener)
                     return@post
                 } else if (difference < smallestDifference) {
                     smallestDifference = difference
@@ -226,13 +332,16 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                 }
             }
 
-            setFinalColor(smallestDifferenceColor, smallestDifferenceXPos.toFloat(), callListener)
+            setFinalColor(smallestDifferenceColor, smallestDifferenceXPos.toFloat(), xPosAlpha, callListener)
         }
     }
 
-    private fun setFinalColor(color: Int, xPos: Float, callListener: Boolean) {
+    private fun setFinalColor(color: Int, xPos: Float, xPosAlpha: Float, callListener: Boolean) {
         currentColor = color
         thumbXPos = xPos
+        alphaThumbXPos = xPosAlpha
+
+        updateAlphaBarShaderPaint()
 
         if (callListener) selectedColorChangedListener?.onSelectedColorChanged(currentColor, id)
 
@@ -252,17 +361,44 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         selectedColorChangedListener = listener
     }
 
+    fun cleanUp() {
+        alphaBarBackgroundBitmap?.recycle()
+        alphaBarBackgroundBitmap = null
+
+        selectedColorChangedListener = null
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val requiredHeight = resolveSize((colorBarHeight + 2 * padding).toInt(), heightMeasureSpec)
+        val requiredHeight =
+            if (showAlphaBar) {
+                resolveSize((2 * colorBarHeight + 5 * padding).toInt(), heightMeasureSpec)
+            } else {
+                resolveSize((colorBarHeight + 2 * padding).toInt(), heightMeasureSpec)
+            }
 
         setMeasuredDimension(widthMeasureSpec, requiredHeight)
     }
 
     override fun onDraw(canvas: Canvas?) {
+        drawBars(canvas)
+        drawThumbnails(canvas)
+    }
 
+    private fun drawBars(canvas: Canvas?) {
         canvas?.drawRoundRect(colorBarRect, colorBarCornerRadius, colorBarCornerRadius, colorBarPaint)
         canvas?.drawRoundRect(colorBarRect, colorBarCornerRadius, colorBarCornerRadius, colorBarPaintBorder)
 
+        if (showAlphaBar) {
+            alphaBarBackgroundBitmap?.let { bitmap ->
+                canvas?.drawBitmap(bitmap, null, alphaBarRect, null)
+            }
+
+            canvas?.drawRoundRect(alphaBarRect, colorBarCornerRadius, colorBarCornerRadius, alphaBarPaint)
+            canvas?.drawRoundRect(alphaBarRect, colorBarCornerRadius, colorBarCornerRadius, colorBarPaintBorder)
+        }
+    }
+
+    private fun drawThumbnails(canvas: Canvas?) {
         thumbPath.reset()
         thumbPath.moveTo(thumbXPos, colorBarRect.centerY() - colorBarRect.height() * 0.25f)
         thumbPath.lineTo(thumbXPos + colorBarRect.height() * 0.4f, colorBarRect.centerY() - colorBarRect.height() * 0.9f)
@@ -274,6 +410,18 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         thumbPath.lineTo(thumbXPos - colorBarRect.height() * 0.4f, colorBarRect.centerY() + colorBarRect.height() * 0.9f)
         thumbPath.close()
 
+        if (showAlphaBar) {
+            thumbPath.moveTo(alphaThumbXPos, alphaBarRect.centerY() - alphaBarRect.height() * 0.25f)
+            thumbPath.lineTo(alphaThumbXPos + alphaBarRect.height() * 0.4f, alphaBarRect.centerY() - alphaBarRect.height() * 0.9f)
+            thumbPath.lineTo(alphaThumbXPos - alphaBarRect.height() * 0.4f, alphaBarRect.centerY() - alphaBarRect.height() * 0.9f)
+            thumbPath.close()
+
+            thumbPath.moveTo(alphaThumbXPos, alphaBarRect.centerY() + alphaBarRect.height() * 0.25f)
+            thumbPath.lineTo(alphaThumbXPos + alphaBarRect.height() * 0.4f, alphaBarRect.centerY() + alphaBarRect.height() * 0.9f)
+            thumbPath.lineTo(alphaThumbXPos - alphaBarRect.height() * 0.4f, alphaBarRect.centerY() + alphaBarRect.height() * 0.9f)
+            thumbPath.close()
+        }
+
         canvas?.drawPath(thumbPath, thumbPaint)
         canvas?.drawPath(thumbPath, thumbPaintBorder)
     }
@@ -283,7 +431,10 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         val colors = IntArray(a.length())
 
         for (i in colors.indices) {
-            colors[i] = a.getColor(i, Color.BLACK)
+            val color = a.getColor(i, Color.BLACK)
+            val rgb = getRGBFromColor(color)
+
+            colors[i] = Color.argb(255, rgb.first, rgb.second, rgb.third)
         }
 
         a.recycle()

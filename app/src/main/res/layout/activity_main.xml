@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#B4B4B4"
@@ -23,9 +24,8 @@
             android:textColor="@android:color/black"
             android:textSize="22sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/colorBarCustomized"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_marginTop="32dp"
+            android:layout_gravity="center" />
 
         <de.tpohrer.tpcolorselectionseekbar.TPColorSelectionSeekBar
             android:id="@+id/colorBarCustomized"
@@ -36,11 +36,8 @@
             android:layout_marginBottom="16dp"
             app:colorBarBorderColor="@color/barBorderColor"
             app:colorBarColors="@array/barColors"
-            app:colorBarCornerRadius="@dimen/barCornerRadius"
-            app:colorBarHeight="@dimen/barHeight"
-            app:layout_constraintBottom_toTopOf="@id/viewCustomized"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:colorBarCornerRadius="32dp"
+            app:colorBarHeight="32dp"
             app:thumbBorderColor="@color/thumbBorderColor"
             app:thumbFillColor="@color/thumbFillColor" />
 
@@ -50,18 +47,7 @@
             android:layout_height="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@id/guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             tools:background="@color/barBorderColor" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5" />
 
         <TextView
             android:id="@+id/tvDefault"
@@ -74,9 +60,7 @@
             android:textColor="@android:color/black"
             android:textSize="22sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline" />
+            android:layout_gravity="center" />
 
         <de.tpohrer.tpcolorselectionseekbar.TPColorSelectionSeekBar
             android:id="@+id/colorBarDefault"
@@ -84,10 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDefault" />
+            android:layout_marginEnd="16dp" />
 
         <View
             android:id="@+id/viewDefault"
@@ -96,23 +77,56 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            tools:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/tvDefaultAlpha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:text="Default with Alpha"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            />
+
+        <de.tpohrer.tpcolorselectionseekbar.TPColorSelectionSeekBar
+            android:id="@+id/colorBarDefaultAlpha"
+            android:layout_width="match_parent"
+            app:showAlphaBar="true"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp" />
+
+        <View
+            android:id="@+id/viewDefaultAlpha"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/colorBarDefault"
+            app:layout_constraintTop_toBottomOf="@id/colorBarDefaultAlpha"
             tools:background="@android:color/black" />
 
         <Button
+            android:layout_gravity="center"
             android:id="@+id/buttonShowSheet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
             android:layout_marginBottom="48dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:text="Show Bottom Sheet"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/viewDefault" />
+            app:layout_constraintTop_toBottomOf="@id/viewDefaultAlpha" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </ScrollView>
