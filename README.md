@@ -1,7 +1,7 @@
 # TPColorSelectionSeekBar [![](https://jitpack.io/v/Tim1802/TPColorSelectionSeekBar.svg)](https://jitpack.io/#Tim1802/TPColorSelectionSeekBar)
 
 
-![GIF that shows TPColorSelectionSeekBar](Design/Demo.gif)
+![GIF that shows TPColorSelectionSeekBar](Design/Demo.gif) <br>
 ![GIF that shows TPColorSelectionSeekBar with alpha selection bar](Design/DemoAlpha.gif)
 
 # Download
