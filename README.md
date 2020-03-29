@@ -58,9 +58,10 @@ colorBar.setColorSelectionChangedListener(object: TPColorSelectionSeekBar.ISelec
 
 # What's next?
 
-| Version        | Feature(s)                        | Status                             |
-| :-------------:|:---------------------------------:| :---------------------------------:|
-| 2.0.0          | Possibility to select alpha value | Done                               | 
+| Version        | Feature(s)                             | Status                             |
+| :-------------:|:---------------------------------:     | :---------------------------------:|
+| 2.0.0          | Possibility to select alpha value      | Done                               | 
+| 3.0.0          | Possibility to display vertical bar(s) | In Progress                        | 
 
 # Licence
 ```
