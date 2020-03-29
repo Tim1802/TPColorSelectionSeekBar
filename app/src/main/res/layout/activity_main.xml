@@ -36,13 +36,51 @@
             android:layout_marginBottom="16dp"
             app:colorBarBorderColor="@color/barBorderColor"
             app:colorBarColors="@array/barColors"
-            app:colorBarCornerRadius="32dp"
+            app:colorBarCornerRadius="16dp"
             app:colorBarHeight="32dp"
             app:thumbBorderColor="@color/thumbBorderColor"
             app:thumbFillColor="@color/thumbFillColor" />
 
         <View
             android:id="@+id/viewCustomized"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            tools:background="@color/barBorderColor" />
+
+
+        <TextView
+            android:id="@+id/tvCustomizedAlpha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
+            android:text="Customized with Alpha"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginTop="32dp"
+            android:layout_gravity="center" />
+
+        <de.tpohrer.tpcolorselectionseekbar.TPColorSelectionSeekBar
+            android:id="@+id/colorBarCustomizedAlpha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:showAlphaBar="true"
+            app:colorBarBorderColor="@color/barBorderColor"
+            app:colorBarColors="@array/barColors"
+            app:colorBarCornerRadius="16dp"
+            app:colorBarHeight="32dp"
+            app:thumbBorderColor="@color/thumbBorderColor"
+            app:thumbFillColor="@color/thumbFillColor" />
+
+        <View
+            android:id="@+id/viewCustomizedAlpha"
             android:layout_width="match_parent"
             android:layout_height="16dp"
             android:layout_marginStart="16dp"

@@ -10,9 +10,11 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
     private lateinit var barDefault: TPColorSelectionSeekBar
     private lateinit var barDefaultAlpha: TPColorSelectionSeekBar
     private lateinit var barCustomized: TPColorSelectionSeekBar
+    private lateinit var barCustomizedAlpha: TPColorSelectionSeekBar
     private lateinit var viewDefault: View
     private lateinit var viewDefaultAlpha: View
     private lateinit var viewCustomized: View
+    private lateinit var viewCustomizedAlpha: View
     private lateinit var buttonSheet: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +23,7 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
 
         viewDefault = findViewById(R.id.viewDefault)
         viewCustomized = findViewById(R.id.viewCustomized)
+        viewCustomizedAlpha = findViewById(R.id.viewCustomizedAlpha)
         viewDefaultAlpha = findViewById(R.id.viewDefaultAlpha)
 
         barDefault = findViewById(R.id.colorBarDefault)
@@ -38,6 +41,11 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
 
         onSelectedColorChanged(barDefaultAlpha.getCurrentColor(), barDefaultAlpha.id)
 
+        barCustomizedAlpha = findViewById(R.id.colorBarCustomizedAlpha)
+        barCustomizedAlpha.setColorSelectionChangedListener(this)
+
+        onSelectedColorChanged(barCustomizedAlpha.getCurrentColor(), barCustomizedAlpha.id)
+
         buttonSheet = findViewById(R.id.buttonShowSheet)
         buttonSheet.setOnClickListener {
             showBottomSheet()
@@ -49,6 +57,7 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
             R.id.colorBarDefault -> viewDefault.setBackgroundColor(color)
             R.id.colorBarCustomized -> viewCustomized.setBackgroundColor(color)
             R.id.colorBarDefaultAlpha -> viewDefaultAlpha.setBackgroundColor(color)
+            R.id.colorBarCustomizedAlpha -> viewCustomizedAlpha.setBackgroundColor(color)
         }
     }
 
