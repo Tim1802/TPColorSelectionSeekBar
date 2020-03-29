@@ -85,14 +85,13 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         attributeSet?.let {
             val a = context.obtainStyledAttributes(it, R.styleable.TPColorSelectionSeekBar)
 
-            showAlphaBar = a.getBoolean(R.styleable.TPColorSelectionSeekBar_showAlphaBar, showAlphaBar)
-
             thumbFillColor = a.getColor(R.styleable.TPColorSelectionSeekBar_thumbFillColor, thumbFillColor)
             thumbBorderColor = a.getColor(R.styleable.TPColorSelectionSeekBar_thumbBorderColor, thumbBorderColor)
             colorBarBorderColor = a.getColor(R.styleable.TPColorSelectionSeekBar_colorBarBorderColor, colorBarBorderColor)
 
             colorBarCornerRadius = a.getDimension(R.styleable.TPColorSelectionSeekBar_colorBarCornerRadius, colorBarCornerRadius)
             colorBarHeight = a.getDimension(R.styleable.TPColorSelectionSeekBar_colorBarHeight, colorBarHeight)
+            showAlphaBar = a.getBoolean(R.styleable.TPColorSelectionSeekBar_showAlphaBar, showAlphaBar)
 
             val colorsArrayId = a.getResourceId(R.styleable.TPColorSelectionSeekBar_colorBarColors, 0)
             if (colorsArrayId != 0) {
@@ -389,13 +388,37 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         canvas?.drawRoundRect(colorBarRect, colorBarCornerRadius, colorBarCornerRadius, colorBarPaintBorder)
 
         if (showAlphaBar) {
-            alphaBarBackgroundBitmap?.let { bitmap ->
-                canvas?.drawBitmap(bitmap, null, alphaBarRect, null)
+            alphaBarBackgroundBitmap?.let {
+                if(colorBarCornerRadius > 0f) {
+                    val bm = getCroppedBitmap(it, alphaBarRect, colorBarCornerRadius)
+
+                    canvas?.drawBitmap(bm, 0f, 0f, null)
+                } else {
+                    canvas?.drawBitmap(it, null, alphaBarRect, null)
+                }
             }
 
             canvas?.drawRoundRect(alphaBarRect, colorBarCornerRadius, colorBarCornerRadius, alphaBarPaint)
             canvas?.drawRoundRect(alphaBarRect, colorBarCornerRadius, colorBarCornerRadius, colorBarPaintBorder)
         }
+    }
+
+    private fun getCroppedBitmap(src: Bitmap, rect: RectF, radius: Float): Bitmap {
+        val output = Bitmap.createBitmap(
+            src.width,
+            src.height, Bitmap.Config.ARGB_8888
+        )
+
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+        val canvas = Canvas(output)
+        canvas.drawRoundRect(rect, radius, radius, paint)
+
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+
+        canvas.drawBitmap(src, null, rect, paint)
+
+        return output
     }
 
     private fun drawThumbnails(canvas: Canvas?) {
