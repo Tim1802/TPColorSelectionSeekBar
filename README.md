@@ -1,8 +1,8 @@
 # TPColorSelectionSeekBar [![](https://jitpack.io/v/Tim1802/TPColorSelectionSeekBar.svg)](https://jitpack.io/#Tim1802/TPColorSelectionSeekBar)
 
 
-![GIF that show TPColorSelectionSeekBar](Design/Demo.gif)
-
+![GIF that shows TPColorSelectionSeekBar](Design/Demo.gif)
+![GIF that shows TPColorSelectionSeekBar with alpha selection bar](Design/DemoAlpha.gif)
 
 # Download
 Make sure that you have added the JitPack repository to your root build.gradle file:
@@ -21,7 +21,7 @@ Add the dependency:
 ```gradle
 dependencies {
     //All your other dependencies ...
-    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v1.2.0'
+    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v2.0.0'
 }
 ```
 # Usage
@@ -41,6 +41,7 @@ Attributes:
 | app:colorBarColors="@array/barColors"                | Colors to be displayed in the bar  | #000000, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF, #FFFFFF |
 | app:thumbBorderColor="@color/thumbBorderColor"       | Border color of the thumbnail      | #000000 |
 | app:thumbFillColor="@color/thumbFillColor"           | Fill color of the thumbnail        | #FF0000 |
+| app:showAlphaBar="true"                              | Possibility to select alpha value  | false   |
 
 
 
@@ -59,7 +60,7 @@ colorBar.setColorSelectionChangedListener(object: TPColorSelectionSeekBar.ISelec
 
 | Version        | Feature(s)                        | Status                             |
 | :-------------:|:---------------------------------:| :---------------------------------:|
-| 2.0.0          | Possibility to select alpha value | In Progress                        | 
+| 2.0.0          | Possibility to select alpha value | Done                               | 
 
 # Licence
 ```
