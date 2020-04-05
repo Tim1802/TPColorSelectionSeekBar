@@ -10,5 +10,6 @@
         <attr name="colorBarColors" format="reference"/>
 
         <attr name="showAlphaBar" format="boolean"/>
+        <attr name="isVertical" format="boolean"/>
     </declare-styleable>
 </resources>

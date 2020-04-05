@@ -41,6 +41,8 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             }
         }
 
+    private var isVertical = false
+
     private var colorBarColors = intArrayOf(
         Color.parseColor("#000000"),
         Color.parseColor("#FF0000"),
@@ -92,6 +94,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             colorBarCornerRadius = a.getDimension(R.styleable.TPColorSelectionSeekBar_colorBarCornerRadius, colorBarCornerRadius)
             colorBarHeight = a.getDimension(R.styleable.TPColorSelectionSeekBar_colorBarHeight, colorBarHeight)
             showAlphaBar = a.getBoolean(R.styleable.TPColorSelectionSeekBar_showAlphaBar, showAlphaBar)
+            isVertical = a.getBoolean(R.styleable.TPColorSelectionSeekBar_isVertical, isVertical)
 
             val colorsArrayId = a.getResourceId(R.styleable.TPColorSelectionSeekBar_colorBarColors, 0)
             if (colorsArrayId != 0) {
