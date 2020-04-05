@@ -162,7 +162,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     }
 
     private fun updateAlphaBarShaderPaint() {
-        if(!showAlphaBar) return
+        if (!showAlphaBar) return
 
         val rgb = getRGBFromColor(currentColor)
 
@@ -189,7 +189,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         return Triple(r, g, b)
     }
 
-    private fun getAlphaFromColor(color: Int) : Int {
+    private fun getAlphaFromColor(color: Int): Int {
         return color shr 24 and 0xff
     }
 
@@ -315,7 +315,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             var smallestDifferenceColor = Int.MAX_VALUE
 
             var xPosAlpha = alphaThumbXPos
-            if(showAlphaBar) {
+            if (showAlphaBar) {
                 val alphaPositionPercentage = 1 - getAlphaFromColor(newColor) / 255f
                 xPosAlpha = alphaPositionPercentage * alphaBarRect.width() + start
             }
@@ -371,14 +371,23 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val requiredHeight =
-            if (showAlphaBar) {
+        if(isVertical) {
+            val requiredWidth = if (showAlphaBar) {
+                resolveSize((2 * colorBarHeight + 5 * padding).toInt(), widthMeasureSpec)
+            } else {
+                resolveSize((colorBarHeight + 2 * padding).toInt(), widthMeasureSpec)
+            }
+
+            setMeasuredDimension(requiredWidth, heightMeasureSpec)
+        } else {
+            val requiredHeight = if (showAlphaBar) {
                 resolveSize((2 * colorBarHeight + 5 * padding).toInt(), heightMeasureSpec)
             } else {
                 resolveSize((colorBarHeight + 2 * padding).toInt(), heightMeasureSpec)
             }
 
-        setMeasuredDimension(widthMeasureSpec, requiredHeight)
+            setMeasuredDimension(widthMeasureSpec, requiredHeight)
+        }
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -392,7 +401,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
         if (showAlphaBar) {
             alphaBarBackgroundBitmap?.let {
-                if(colorBarCornerRadius > 0f) {
+                if (colorBarCornerRadius > 0f) {
                     val bm = getCroppedBitmap(it, alphaBarRect, colorBarCornerRadius)
 
                     canvas?.drawBitmap(bm, 0f, 0f, null)

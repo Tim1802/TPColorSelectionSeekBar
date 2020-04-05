@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fadeScrollbars="false"
     android:fillViewport="true">
 
     <LinearLayout
@@ -167,15 +168,52 @@
         <de.tpohrer.tpcolorselectionseekbar.TPColorSelectionSeekBar
             android:id="@+id/colorBarDefaultVertical"
             app:isVertical="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp" />
 
         <View
             android:id="@+id/viewDefaultVertical"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/colorBarDefaultAlpha"
+            tools:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/tvDefaultVerticalAlpha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:text="Default vertical with alpha"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_gravity="center" />
+
+        <de.tpohrer.tpcolorselectionseekbar.TPColorSelectionSeekBar
+            android:id="@+id/colorBarDefaultVerticalAlpha"
+            app:isVertical="true"
+            app:showAlphaBar="true"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp" />
+
+        <View
+            android:id="@+id/viewDefaultVerticalAlpha"
+            android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
