@@ -67,14 +67,18 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             if (field != value) {
                 field = value
                 padding = field / 2
-                thumbXPos = padding
-                alphaThumbXPos = padding
+                thumbPos = padding
+                alphaThumbPos = padding
             }
         }
 
     private var padding = colorBarHeight / 2
-    private var thumbXPos = padding
-    private var alphaThumbXPos = padding
+
+    //stores the x coordinate if bar is horizontal else stores the y coordinate
+    private var thumbPos = padding
+
+    //stores the x coordinate if bar is horizontal else stores the y coordinate
+    private var alphaThumbPos = padding
 
     private var colorBarCornerRadius = 0f
     private var selectedColorChangedListener: ISelectedColorChangedListener? = null
@@ -266,12 +270,12 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         if (newXPos > width - padding) newXPos = width - padding
 
         if (isMoveActionForColorBar == true) {
-            thumbXPos = newXPos
+            thumbPos = newXPos
         } else if (isMoveActionForColorBar == false) {
-            alphaThumbXPos = newXPos
+            alphaThumbPos = newXPos
         }
 
-        currentColor = calculateColor(thumbXPos, alphaThumbXPos)
+        currentColor = calculateColor(thumbPos, alphaThumbPos)
 
         if (isMoveActionForColorBar == true) {
             updateAlphaBarShaderPaint(width, height)
@@ -323,8 +327,8 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
     private fun setFinalColor(color: Int, xPos: Float, xPosAlpha: Float, callListener: Boolean) {
         currentColor = color
-        thumbXPos = xPos
-        alphaThumbXPos = xPosAlpha
+        thumbPos = xPos
+        alphaThumbPos = xPosAlpha
 
         updateAlphaBarShaderPaint(width, height)
 
@@ -339,7 +343,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
     override fun onDraw(canvas: Canvas?) {
         drawBars(canvas)
-        //drawThumbnails(canvas)
+        drawThumbnails(canvas)
     }
 
     private fun drawBars(canvas: Canvas?) {
@@ -361,8 +365,8 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             canvas?.drawRoundRect(alphaBarRect, colorBarCornerRadius, colorBarCornerRadius, colorBarPaintBorder)
         }
 
+        //TODO: Remove when done
         canvas?.drawRect(0f, 0f, width.toFloat(), height.toFloat(), colorBarPaintBorder)
-
     }
 
     private fun getCroppedBitmap(src: Bitmap, rect: RectF, radius: Float): Bitmap {
@@ -385,30 +389,63 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
     private fun drawThumbnails(canvas: Canvas?) {
         thumbPath.reset()
-        thumbPath.moveTo(thumbXPos, colorBarRect.centerY() - colorBarRect.height() * 0.25f)
-        thumbPath.lineTo(thumbXPos + colorBarRect.height() * 0.4f, colorBarRect.centerY() - colorBarRect.height() * 0.9f)
-        thumbPath.lineTo(thumbXPos - colorBarRect.height() * 0.4f, colorBarRect.centerY() - colorBarRect.height() * 0.9f)
-        thumbPath.close()
 
-        thumbPath.moveTo(thumbXPos, colorBarRect.centerY() + colorBarRect.height() * 0.25f)
-        thumbPath.lineTo(thumbXPos + colorBarRect.height() * 0.4f, colorBarRect.centerY() + colorBarRect.height() * 0.9f)
-        thumbPath.lineTo(thumbXPos - colorBarRect.height() * 0.4f, colorBarRect.centerY() + colorBarRect.height() * 0.9f)
-        thumbPath.close()
-
-        if (showAlphaBar) {
-            thumbPath.moveTo(alphaThumbXPos, alphaBarRect.centerY() - alphaBarRect.height() * 0.25f)
-            thumbPath.lineTo(alphaThumbXPos + alphaBarRect.height() * 0.4f, alphaBarRect.centerY() - alphaBarRect.height() * 0.9f)
-            thumbPath.lineTo(alphaThumbXPos - alphaBarRect.height() * 0.4f, alphaBarRect.centerY() - alphaBarRect.height() * 0.9f)
-            thumbPath.close()
-
-            thumbPath.moveTo(alphaThumbXPos, alphaBarRect.centerY() + alphaBarRect.height() * 0.25f)
-            thumbPath.lineTo(alphaThumbXPos + alphaBarRect.height() * 0.4f, alphaBarRect.centerY() + alphaBarRect.height() * 0.9f)
-            thumbPath.lineTo(alphaThumbXPos - alphaBarRect.height() * 0.4f, alphaBarRect.centerY() + alphaBarRect.height() * 0.9f)
-            thumbPath.close()
-        }
+        setPathForColorBarThumb()
+        setPathForAlphaBarThumb()
 
         canvas?.drawPath(thumbPath, thumbPaint)
         canvas?.drawPath(thumbPath, thumbPaintBorder)
+    }
+
+    private fun setPathForColorBarThumb() {
+        if(isVertical) {
+            thumbPath.moveTo(colorBarRect.centerX() - colorBarRect.width() * 0.25f, thumbPos)
+            thumbPath.lineTo( colorBarRect.centerX() - colorBarRect.width() * 0.9f, thumbPos + colorBarRect.width() * 0.4f)
+            thumbPath.lineTo(colorBarRect.centerX() - colorBarRect.width() * 0.9f, thumbPos - colorBarRect.width() * 0.4f)
+            thumbPath.close()
+
+            thumbPath.moveTo(colorBarRect.centerX() + colorBarRect.width() * 0.25f, thumbPos)
+            thumbPath.lineTo(colorBarRect.centerX() + colorBarRect.width() * 0.9f, thumbPos + colorBarRect.width() * 0.4f)
+            thumbPath.lineTo(colorBarRect.centerX() + colorBarRect.width() * 0.9f, thumbPos - colorBarRect.width() * 0.4f)
+            thumbPath.close()
+        } else {
+            thumbPath.moveTo(thumbPos, colorBarRect.centerY() - colorBarRect.height() * 0.25f)
+            thumbPath.lineTo(thumbPos + colorBarRect.height() * 0.4f, colorBarRect.centerY() - colorBarRect.height() * 0.9f)
+            thumbPath.lineTo(thumbPos - colorBarRect.height() * 0.4f, colorBarRect.centerY() - colorBarRect.height() * 0.9f)
+            thumbPath.close()
+
+            thumbPath.moveTo(thumbPos, colorBarRect.centerY() + colorBarRect.height() * 0.25f)
+            thumbPath.lineTo(thumbPos + colorBarRect.height() * 0.4f, colorBarRect.centerY() + colorBarRect.height() * 0.9f)
+            thumbPath.lineTo(thumbPos - colorBarRect.height() * 0.4f, colorBarRect.centerY() + colorBarRect.height() * 0.9f)
+            thumbPath.close()
+        }
+    }
+
+    private fun setPathForAlphaBarThumb() {
+        if(!showAlphaBar) return
+
+        if(isVertical) {
+            thumbPath.moveTo(alphaBarRect.centerX() - alphaBarRect.width() * 0.25f, alphaThumbPos)
+            thumbPath.lineTo(alphaBarRect.centerX() - alphaBarRect.width() * 0.9f, alphaThumbPos + alphaBarRect.width() * 0.4f)
+            thumbPath.lineTo(alphaBarRect.centerX() - alphaBarRect.width() * 0.9f, alphaThumbPos - alphaBarRect.width() * 0.4f)
+            thumbPath.close()
+
+            thumbPath.moveTo(alphaBarRect.centerX() + alphaBarRect.width() * 0.25f, alphaThumbPos)
+            thumbPath.lineTo(alphaBarRect.centerX() + alphaBarRect.width() * 0.9f, alphaThumbPos + alphaBarRect.width() * 0.4f)
+            thumbPath.lineTo(alphaBarRect.centerX() + alphaBarRect.width() * 0.9f, alphaThumbPos - alphaBarRect.width() * 0.4f)
+            thumbPath.close()
+        } else {
+            thumbPath.moveTo(alphaThumbPos, alphaBarRect.centerY() - alphaBarRect.height() * 0.25f)
+            thumbPath.lineTo(alphaThumbPos + alphaBarRect.height() * 0.4f, alphaBarRect.centerY() - alphaBarRect.height() * 0.9f)
+            thumbPath.lineTo(alphaThumbPos - alphaBarRect.height() * 0.4f, alphaBarRect.centerY() - alphaBarRect.height() * 0.9f)
+            thumbPath.close()
+
+            thumbPath.moveTo(alphaThumbPos, alphaBarRect.centerY() + alphaBarRect.height() * 0.25f)
+            thumbPath.lineTo(alphaThumbPos + alphaBarRect.height() * 0.4f, alphaBarRect.centerY() + alphaBarRect.height() * 0.9f)
+            thumbPath.lineTo(alphaThumbPos - alphaBarRect.height() * 0.4f, alphaBarRect.centerY() + alphaBarRect.height() * 0.9f)
+            thumbPath.close()
+        }
+
     }
 
     private fun getColorsById(id: Int): IntArray {
@@ -450,7 +487,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             var smallestDifferenceXPos = Int.MAX_VALUE
             var smallestDifferenceColor = Int.MAX_VALUE
 
-            var xPosAlpha = alphaThumbXPos
+            var xPosAlpha = alphaThumbPos
             if (showAlphaBar) {
                 val alphaPositionPercentage = 1 - getAlphaFromColor(newColor) / 255f
                 xPosAlpha = alphaPositionPercentage * alphaBarRect.width() + start
