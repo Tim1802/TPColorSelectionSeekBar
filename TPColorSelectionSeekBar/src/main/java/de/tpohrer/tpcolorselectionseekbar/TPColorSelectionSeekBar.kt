@@ -35,7 +35,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                 if (field) {
                     alphaBarBackgroundBitmap = BitmapFactory.decodeResource(
                         resources,
-                        R.drawable.background_alpha
+                        if(isVertical) R.drawable.background_alpha_vertical else R.drawable.background_alpha_horizontal
                     )
                 }
             }
@@ -97,8 +97,8 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
             colorBarCornerRadius = a.getDimension(R.styleable.TPColorSelectionSeekBar_colorBarCornerRadius, colorBarCornerRadius)
             colorBarHeight = a.getDimension(R.styleable.TPColorSelectionSeekBar_colorBarHeight, colorBarHeight)
-            showAlphaBar = a.getBoolean(R.styleable.TPColorSelectionSeekBar_showAlphaBar, showAlphaBar)
             isVertical = a.getBoolean(R.styleable.TPColorSelectionSeekBar_isVertical, isVertical)
+            showAlphaBar = a.getBoolean(R.styleable.TPColorSelectionSeekBar_showAlphaBar, showAlphaBar)
 
             val colorsArrayId = a.getResourceId(R.styleable.TPColorSelectionSeekBar_colorBarColors, 0)
             if (colorsArrayId != 0) {
@@ -245,7 +245,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                     else -> null
                 }
 
-                updateThumbPosition(xPos)
+                updateThumbPosition(if(isVertical) yPos else xPos)
                 return true
             }
 
@@ -253,8 +253,9 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                 parent.requestDisallowInterceptTouchEvent(true)
 
                 val xPos = event.x
+                val yPos = event.y
 
-                updateThumbPosition(xPos)
+                updateThumbPosition(if(isVertical) yPos else xPos)
                 return true
             }
             else -> isMoveActionForColorBar = null
@@ -263,16 +264,21 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         return super.onTouchEvent(event)
     }
 
-    private fun updateThumbPosition(xPos: Float) {
+    private fun updateThumbPosition(pos: Float) {
+        var newPos = pos
 
-        var newXPos = xPos
-        if (newXPos < padding) newXPos = padding
-        if (newXPos > width - padding) newXPos = width - padding
+        if (newPos < padding) newPos = padding
+
+        if(isVertical) {
+            if (newPos > height - padding) newPos = height - padding
+        } else {
+            if (newPos > width - padding) newPos = width - padding
+        }
 
         if (isMoveActionForColorBar == true) {
-            thumbPos = newXPos
+            thumbPos = newPos
         } else if (isMoveActionForColorBar == false) {
-            alphaThumbPos = newXPos
+            alphaThumbPos = newPos
         }
 
         currentColor = calculateColor(thumbPos, alphaThumbPos)
@@ -286,9 +292,10 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         invalidate()
     }
 
-    private fun calculateColor(xPosColor: Float, xPosAlpha: Float): Int {
-        val xPosAdjusted = xPosColor - padding
-        val percentage = xPosAdjusted / colorBarRect.width()
+    private fun calculateColor(posColor: Float, posAlpha: Float): Int {
+
+        val posAdjusted = posColor - padding
+        val percentage = if(isVertical) posAdjusted / colorBarRect.height() else posAdjusted / colorBarRect.width()
 
         var colorFirst = colorBarColors.last()
         var colorSecond = colorBarColors.last()
@@ -312,8 +319,8 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         var alpha = 255
 
         if (showAlphaBar) {
-            val xPosAlphaAdjusted = xPosAlpha - padding
-            val percentageAlpha = 1 - xPosAlphaAdjusted / alphaBarRect.width()
+            val posAlphaAdjusted = posAlpha - padding
+            val percentageAlpha = 1 - if(isVertical) posAlphaAdjusted / alphaBarRect.height() else posAlphaAdjusted / alphaBarRect.width()
 
             alpha = (alpha * percentageAlpha).toInt()
         }
@@ -325,10 +332,10 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         return (c1 * percentageOfC1 + c2 * percentageOfC2).toInt()
     }
 
-    private fun setFinalColor(color: Int, xPos: Float, xPosAlpha: Float, callListener: Boolean) {
+    private fun setFinalColor(color: Int, pos: Float, posAlpha: Float, callListener: Boolean) {
         currentColor = color
-        thumbPos = xPos
-        alphaThumbPos = xPosAlpha
+        thumbPos = pos
+        alphaThumbPos = posAlpha
 
         updateAlphaBarShaderPaint(width, height)
 
@@ -364,9 +371,6 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             canvas?.drawRoundRect(alphaBarRect, colorBarCornerRadius, colorBarCornerRadius, alphaBarPaint)
             canvas?.drawRoundRect(alphaBarRect, colorBarCornerRadius, colorBarCornerRadius, colorBarPaintBorder)
         }
-
-        //TODO: Remove when done
-        canvas?.drawRect(0f, 0f, width.toFloat(), height.toFloat(), colorBarPaintBorder)
     }
 
     private fun getCroppedBitmap(src: Bitmap, rect: RectF, radius: Float): Bitmap {
@@ -445,7 +449,6 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             thumbPath.lineTo(alphaThumbPos - alphaBarRect.height() * 0.4f, alphaBarRect.centerY() + alphaBarRect.height() * 0.9f)
             thumbPath.close()
         }
-
     }
 
     private fun getColorsById(id: Int): IntArray {
@@ -461,70 +464,6 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
         a.recycle()
         return colors
-    }
-
-    /**
-     * Returns the currently selected color
-     *
-     * @return the currently selected color
-     */
-    fun getCurrentColor() = currentColor
-
-    /**
-     * Sets the new color and updates the UI.
-     * If the specified color couldn't be found, the "closest" color will be selected
-     *
-     * @param newColor the new color to be set
-     * @param callListener true if any present listener should be informed about the color change
-     *
-     * */
-    fun setColor(newColor: Int, callListener: Boolean = true) {
-        post {
-            val start = padding.toInt()
-            val end = (padding + colorBarRect.width()).toInt()
-
-            var smallestDifference = Int.MAX_VALUE
-            var smallestDifferenceXPos = Int.MAX_VALUE
-            var smallestDifferenceColor = Int.MAX_VALUE
-
-            var xPosAlpha = alphaThumbPos
-            if (showAlphaBar) {
-                val alphaPositionPercentage = 1 - getAlphaFromColor(newColor) / 255f
-                xPosAlpha = alphaPositionPercentage * alphaBarRect.width() + start
-            }
-
-            for (i in start..end) {
-                val color = calculateColor(i.toFloat(), xPosAlpha)
-                val difference = colorDifference(color, newColor)
-
-                if (difference == 0) {
-                    setFinalColor(newColor, i.toFloat(), xPosAlpha, callListener)
-                    return@post
-                } else if (difference < smallestDifference) {
-                    smallestDifference = difference
-                    smallestDifferenceXPos = i
-                    smallestDifferenceColor = color
-                }
-            }
-
-            setFinalColor(smallestDifferenceColor, smallestDifferenceXPos.toFloat(), xPosAlpha, callListener)
-        }
-    }
-
-    /**
-     * Add a new listener that should get informed about a color change
-     *
-     * @param listener the listener that should get informed about a color change
-     */
-    fun setColorSelectionChangedListener(listener: ISelectedColorChangedListener?) {
-        selectedColorChangedListener = listener
-    }
-
-    fun cleanUp() {
-        alphaBarBackgroundBitmap?.recycle()
-        alphaBarBackgroundBitmap = null
-
-        selectedColorChangedListener = null
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -545,6 +484,78 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
             setMeasuredDimension(widthMeasureSpec, requiredHeight)
         }
+    }
+
+    /**
+     * Returns the currently selected color
+     *
+     * @return the currently selected color
+     */
+    fun getCurrentColor() = currentColor
+
+    /**
+     * Sets the new color and updates the UI.
+     * If the specified color couldn't be found, the "closest" color will be selected
+     *
+     * @param newColor the new color to be set
+     * @param callListener true if any present listener should be informed about the color change
+     *
+     * */
+    fun setColor(newColor: Int, callListener: Boolean = true) {
+        post {
+            val start = padding.toInt()
+            val end = if(isVertical) {
+                (padding + colorBarRect.height()).toInt()
+            } else {
+                (padding + colorBarRect.width()).toInt()
+            }
+
+            var smallestDifference = Int.MAX_VALUE
+            var smallestDifferencePos = Int.MAX_VALUE
+            var smallestDifferenceColor = Int.MAX_VALUE
+
+            var posAlpha = alphaThumbPos
+            if (showAlphaBar) {
+                val alphaPositionPercentage = 1 - getAlphaFromColor(newColor) / 255f
+                posAlpha = if(isVertical) {
+                    alphaPositionPercentage * alphaBarRect.height() + start
+                } else {
+                    alphaPositionPercentage * alphaBarRect.width() + start
+                }
+            }
+
+            for (i in start..end) {
+                val color = calculateColor(i.toFloat(), posAlpha)
+                val difference = colorDifference(color, newColor)
+
+                if (difference == 0) {
+                    setFinalColor(newColor, i.toFloat(), posAlpha, callListener)
+                    return@post
+                } else if (difference < smallestDifference) {
+                    smallestDifference = difference
+                    smallestDifferencePos = i
+                    smallestDifferenceColor = color
+                }
+            }
+
+            setFinalColor(smallestDifferenceColor, smallestDifferencePos.toFloat(), posAlpha, callListener)
+        }
+    }
+
+    /**
+     * Add a new listener that should get informed about a color change
+     *
+     * @param listener the listener that should get informed about a color change
+     */
+    fun setColorSelectionChangedListener(listener: ISelectedColorChangedListener?) {
+        selectedColorChangedListener = listener
+    }
+
+    fun cleanUp() {
+        alphaBarBackgroundBitmap?.recycle()
+        alphaBarBackgroundBitmap = null
+
+        selectedColorChangedListener = null
     }
 
     interface ISelectedColorChangedListener {
