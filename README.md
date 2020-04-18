@@ -21,7 +21,7 @@ Add the dependency:
 ```gradle
 dependencies {
     //All your other dependencies ...
-    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v2.0.0'
+    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v3.0.0'
 }
 ```
 # Usage
@@ -33,15 +33,16 @@ XML:
     android:layout_height="wrap_content"/>
 ```
 Attributes:
-| Attribute                                            | Description                        | Default value(s)  |
-| -------------                                        |:-------------:                     | :-----:|
-| app:colorBarCornerRadius="8dp"                       | Corner radius of the bar           | 0px |
-| app:colorBarHeight="16dp"                            | Height of the bar                  | 60px |
-| app:colorBarBorderColor="@color/barBorderColor"      | Border color of the bar            | #000000 |
-| app:colorBarColors="@array/barColors"                | Colors to be displayed in the bar  | #000000, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF, #FFFFFF |
-| app:thumbBorderColor="@color/thumbBorderColor"       | Border color of the thumbnail      | #000000 |
-| app:thumbFillColor="@color/thumbFillColor"           | Fill color of the thumbnail        | #FF0000 |
-| app:showAlphaBar="true"                              | Possibility to select alpha value  | false   |
+| Attribute                                            | Description                             | Default value(s)  |
+| -------------                                        |:-------------:                          | :-----:|
+| app:colorBarCornerRadius="8dp"                       | Corner radius of the bar                | 0px |
+| app:colorBarHeight="16dp"                            | Height of the bar                       | 60px |
+| app:colorBarBorderColor="@color/barBorderColor"      | Border color of the bar                 | #000000 |
+| app:colorBarColors="@array/barColors"                | Colors to be displayed in the bar       | #000000, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF, #FFFFFF |
+| app:thumbBorderColor="@color/thumbBorderColor"       | Border color of the thumbnail           | #000000 |
+| app:thumbFillColor="@color/thumbFillColor"           | Fill color of the thumbnail             | #FF0000 |
+| app:showAlphaBar="true"                              | Possibility to select alpha value       | false   |
+| app:isVertical="true"                                | Possibility to display vertical bar(s)  | false   |
 
 
 
@@ -61,7 +62,8 @@ colorBar.setColorSelectionChangedListener(object: TPColorSelectionSeekBar.ISelec
 | Version        | Feature(s)                             | Status                             |
 | :-------------:|:---------------------------------:     | :---------------------------------:|
 | 2.0.0          | Possibility to select alpha value      | Done                               | 
-| 3.0.0          | Possibility to display vertical bar(s) | In Progress                        | 
+| 3.0.0          | Possibility to display vertical bar(s) | Done                               | 
+| 3.1.0          | Code cleanup and optimisations         | In Progress                        | 
 
 # Licence
 ```
