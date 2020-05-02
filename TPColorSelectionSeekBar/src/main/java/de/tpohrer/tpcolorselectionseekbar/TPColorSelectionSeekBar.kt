@@ -5,6 +5,7 @@ import android.graphics.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import kotlin.math.abs
@@ -42,6 +43,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         }
 
     private var isVertical = false
+    private var gravity = Gravity.TOP or Gravity.START
 
     private var colorBarColors = intArrayOf(
         Color.parseColor("#000000"),
@@ -99,6 +101,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             colorBarHeight = a.getDimension(R.styleable.TPColorSelectionSeekBar_colorBarHeight, colorBarHeight)
             isVertical = a.getBoolean(R.styleable.TPColorSelectionSeekBar_isVertical, isVertical)
             showAlphaBar = a.getBoolean(R.styleable.TPColorSelectionSeekBar_showAlphaBar, showAlphaBar)
+            gravity = a.getInt(R.styleable.TPColorSelectionSeekBar_android_gravity, gravity)
 
             val colorsArrayId = a.getResourceId(R.styleable.TPColorSelectionSeekBar_colorBarColors, 0)
             if (colorsArrayId != 0) {

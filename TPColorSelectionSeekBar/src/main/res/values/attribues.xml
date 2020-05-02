@@ -11,5 +11,6 @@
 
         <attr name="showAlphaBar" format="boolean"/>
         <attr name="isVertical" format="boolean"/>
+        <attr name="android:gravity"/>
     </declare-styleable>
 </resources>
