@@ -146,7 +146,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        val absoluteGravity = Gravity.getAbsoluteGravity(gravity, 0)
+        val absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection)
         val verticalGravity = absoluteGravity and Gravity.VERTICAL_GRAVITY_MASK
         val horizontalGravity = absoluteGravity and Gravity.HORIZONTAL_GRAVITY_MASK
 
