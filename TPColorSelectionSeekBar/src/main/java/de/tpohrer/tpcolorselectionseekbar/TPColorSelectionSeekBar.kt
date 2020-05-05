@@ -146,14 +146,18 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        updateColorBarRect(w, h)
+        val absoluteGravity = Gravity.getAbsoluteGravity(gravity, 0)
+        val verticalGravity = absoluteGravity and Gravity.VERTICAL_GRAVITY_MASK
+        val horizontalGravity = absoluteGravity and Gravity.HORIZONTAL_GRAVITY_MASK
+
+        updateColorBarRect(w, h, horizontalGravity, verticalGravity)
         updateColorBarShaderPaint(w, h)
 
-        updateAlphaBarRect(w, h)
+        updateAlphaBarRect(w, h, horizontalGravity, verticalGravity)
         updateAlphaBarShaderPaint(w, h)
     }
 
-    private fun updateColorBarRect(width: Int, height: Int) {
+    private fun updateColorBarRect(width: Int, height: Int, horizontalGravity: Int, verticalGravity: Int) {
         val top = padding
         val left = padding
         val bottom = if(isVertical) height - padding else colorBarHeight + padding
@@ -179,7 +183,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         )
     }
 
-    private fun updateAlphaBarRect(width: Int, height: Int) {
+    private fun updateAlphaBarRect(width: Int, height: Int, horizontalGravity: Int, verticalGravity: Int) {
         if (!showAlphaBar) return
 
         val top = if(isVertical) padding else 4 * padding + colorBarHeight
