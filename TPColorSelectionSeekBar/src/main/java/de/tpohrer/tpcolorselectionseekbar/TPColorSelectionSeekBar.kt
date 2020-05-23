@@ -5,6 +5,7 @@ import android.graphics.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -147,21 +148,100 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         val absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection)
-        val verticalGravity = absoluteGravity and Gravity.VERTICAL_GRAVITY_MASK
         val horizontalGravity = absoluteGravity and Gravity.HORIZONTAL_GRAVITY_MASK
+        val verticalGravity = absoluteGravity and Gravity.VERTICAL_GRAVITY_MASK
 
         updateColorBarRect(w, h, horizontalGravity, verticalGravity)
-        updateColorBarShaderPaint(w, h)
+        updateColorBarShaderPaint()
 
-        updateAlphaBarRect(w, h, horizontalGravity, verticalGravity)
-        updateAlphaBarShaderPaint(w, h)
+        updateAlphaBarRect()
+        updateAlphaBarShaderPaint()
     }
 
     private fun updateColorBarRect(width: Int, height: Int, horizontalGravity: Int, verticalGravity: Int) {
-        val top = padding
-        val left = padding
-        val bottom = if(isVertical) height - padding else colorBarHeight + padding
-        val right = if(isVertical) colorBarHeight + padding else width - padding
+        var top = 0f
+        var left = 0f
+        var bottom = 0f
+        var right = 0f
+
+        when(horizontalGravity) {
+            Gravity.NO_GRAVITY, Gravity.LEFT -> {
+                left = padding
+                right = if(isVertical) colorBarHeight + padding else width - padding
+            }
+
+            Gravity.RIGHT -> {
+                if(isVertical) {
+                    left = if(showAlphaBar) {
+                        width - 2 * colorBarHeight - 4 * padding
+                    } else {
+                        width - padding - colorBarHeight
+                    }
+
+                    right = left + colorBarHeight
+
+                } else {
+                    left = padding
+                    right = width - padding
+                }
+            }
+
+            Gravity.CENTER_HORIZONTAL, Gravity.CENTER, Gravity.FILL_HORIZONTAL -> {
+
+                if(isVertical) {
+                    left = if(showAlphaBar) {
+                        width / 2 - colorBarHeight - padding - padding / 2
+                    } else {
+                        width / 2 - colorBarHeight / 2
+                    }
+
+                    right = left + colorBarHeight
+
+                } else {
+                    left = padding
+                    right = width - padding
+                }
+            }
+        }
+
+        when(verticalGravity) {
+            Gravity.NO_GRAVITY, Gravity.TOP -> {
+                top = padding
+                bottom = if(isVertical) height - padding else padding + colorBarHeight
+            }
+
+            Gravity.BOTTOM -> {
+                if(!isVertical) {
+                    top = if(showAlphaBar) {
+                        height - 2 * colorBarHeight - 4 * padding
+                    } else {
+                        height - padding - colorBarHeight
+                    }
+
+                    bottom = top + colorBarHeight
+
+                } else {
+                    top = padding
+                    bottom = height - padding
+                }
+            }
+
+            Gravity.CENTER_VERTICAL, Gravity.FILL_VERTICAL, Gravity.CENTER -> {
+                if(!isVertical) {
+                    top = if(showAlphaBar) {
+                        height / 2 - colorBarHeight - padding - padding / 2
+                    } else {
+                        height / 2 - colorBarHeight / 2
+                    }
+
+                    bottom = top + colorBarHeight
+
+                } else {
+                    top = padding
+                    bottom = height - padding
+                }
+            }
+        }
 
         colorBarRect.top = top
         colorBarRect.left = left
@@ -169,11 +249,11 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         colorBarRect.bottom = bottom
     }
 
-    private fun updateColorBarShaderPaint(width: Int, height: Int) {
-        val x0 = padding
-        val y0 = padding
-        val x1 = if (isVertical) padding else width - padding
-        val y1 = if (isVertical) height - padding else padding
+    private fun updateColorBarShaderPaint() {
+        val x0 = colorBarRect.left
+        val y0 = colorBarRect.top
+        val x1 = colorBarRect.right
+        val y1 = colorBarRect.bottom
 
         colorBarPaint.shader = LinearGradient(
             x0, y0, x1, y1,
@@ -183,13 +263,14 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         )
     }
 
-    private fun updateAlphaBarRect(width: Int, height: Int, horizontalGravity: Int, verticalGravity: Int) {
+    private fun updateAlphaBarRect() {
         if (!showAlphaBar) return
 
-        val top = if(isVertical) padding else 4 * padding + colorBarHeight
-        val left = if(isVertical) 4 * padding + colorBarHeight else padding
-        val bottom = if(isVertical) height - padding else 4 * padding + 2 * colorBarHeight
-        val right = if(isVertical) 4 * padding + 2 * colorBarHeight else width - padding
+        val top = if(isVertical) colorBarRect.top else colorBarRect.bottom + 3 * padding
+        val bottom = if(isVertical) colorBarRect.bottom else top + colorBarHeight
+
+        val left = if(isVertical) colorBarRect.right + 3 * padding else colorBarRect.left
+        val right = if(isVertical) left + colorBarHeight else colorBarRect.right
 
         alphaBarRect.top = top
         alphaBarRect.left = left
@@ -197,7 +278,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         alphaBarRect.bottom = bottom
     }
 
-    private fun updateAlphaBarShaderPaint(width: Int, height: Int) {
+    private fun updateAlphaBarShaderPaint() {
         if (!showAlphaBar) return
 
         val rgb = getRGBFromColor(currentColor)
@@ -206,11 +287,10 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         val g = rgb.second
         val b = rgb.third
 
-        val x0 = if(isVertical) width - padding - colorBarHeight else padding
-        val y0 = if(isVertical) padding  else height - padding - colorBarHeight
-
-        val x1 = if (isVertical) height - padding else width - padding
-        val y1 = if(isVertical) height - padding  else height - padding - colorBarHeight
+        val x0 = alphaBarRect.left
+        val y0 = alphaBarRect.top
+        val x1 = alphaBarRect.right
+        val y1 = alphaBarRect.bottom
 
         alphaBarPaint.shader = LinearGradient(
             x0, y0, x1, y1,
@@ -291,7 +371,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         currentColor = calculateColor(thumbPos, alphaThumbPos)
 
         if (isMoveActionForColorBar == true) {
-            updateAlphaBarShaderPaint(width, height)
+            updateAlphaBarShaderPaint()
         }
 
         selectedColorChangedListener?.onSelectedColorChanged(currentColor, id)
@@ -344,9 +424,11 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         thumbPos = pos
         alphaThumbPos = posAlpha
 
-        updateAlphaBarShaderPaint(width, height)
+        updateAlphaBarShaderPaint()
 
-        if (callListener) selectedColorChangedListener?.onSelectedColorChanged(currentColor, id)
+        if (callListener) {
+            selectedColorChangedListener?.onSelectedColorChanged(currentColor, id)
+        }
 
         invalidate()
     }
