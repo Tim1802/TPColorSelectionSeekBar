@@ -13,6 +13,7 @@ Make sure that you have added the JitPack repository to your root build.gradle f
 allprojects {
     repositories {
       //All your other repositories ...
+      
       maven { url 'https://jitpack.io' }
    }
 }
@@ -23,7 +24,8 @@ Add the dependency:
 ```gradle
 dependencies {
     //All your other dependencies ...
-    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v3.0.0'
+    
+    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v3.1.0'
 }
 ```
 # Usage
@@ -65,8 +67,8 @@ colorBar.setColorSelectionChangedListener(object: TPColorSelectionSeekBar.ISelec
 | :-------------:|:---------------------------------:     | :---------------------------------:|
 | 2.0.0          | Possibility to select alpha value      | Done                               | 
 | 3.0.0          | Possibility to display vertical bar(s) | Done                               | 
-| 3.1.0          | Support gravity                        | In Progress                        | 
-| 3.2.0          | Support padding                        |                                    | 
+| 3.1.0          | Support gravity                        | Done                               | 
+| 3.2.0          | Support padding                        | In Progress                        | 
 | 3.3.0          | Clean up and optimisations             |                                    | 
 
 
