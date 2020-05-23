@@ -5,7 +5,6 @@ import android.graphics.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -37,7 +36,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                 if (field) {
                     alphaBarBackgroundBitmap = BitmapFactory.decodeResource(
                         resources,
-                        if(isVertical) R.drawable.background_alpha_vertical else R.drawable.background_alpha_horizontal
+                        if (isVertical) R.drawable.background_alpha_vertical else R.drawable.background_alpha_horizontal
                     )
                 }
             }
@@ -159,20 +158,16 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     }
 
     private fun updateColorBarRect(width: Int, height: Int, horizontalGravity: Int, verticalGravity: Int) {
-        var top = 0f
-        var left = 0f
-        var bottom = 0f
-        var right = 0f
+        val top : Float
+        val left: Float
+        val bottom: Float
+        val right: Float
 
-        when(horizontalGravity) {
-            Gravity.NO_GRAVITY, Gravity.LEFT -> {
-                left = padding
-                right = if(isVertical) colorBarHeight + padding else width - padding
-            }
+        when (horizontalGravity) {
 
             Gravity.RIGHT -> {
-                if(isVertical) {
-                    left = if(showAlphaBar) {
+                if (isVertical) {
+                    left = if (showAlphaBar) {
                         width - 2 * colorBarHeight - 4 * padding
                     } else {
                         width - padding - colorBarHeight
@@ -186,10 +181,10 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                 }
             }
 
-            Gravity.CENTER_HORIZONTAL, Gravity.CENTER, Gravity.FILL_HORIZONTAL -> {
+            Gravity.CENTER_HORIZONTAL, Gravity.CENTER -> {
 
-                if(isVertical) {
-                    left = if(showAlphaBar) {
+                if (isVertical) {
+                    left = if (showAlphaBar) {
                         width / 2 - colorBarHeight - padding - padding / 2
                     } else {
                         width / 2 - colorBarHeight / 2
@@ -202,17 +197,18 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                     right = width - padding
                 }
             }
+
+            else -> {
+                left = padding
+                right = if (isVertical) colorBarHeight + padding else width - padding
+            }
         }
 
-        when(verticalGravity) {
-            Gravity.NO_GRAVITY, Gravity.TOP -> {
-                top = padding
-                bottom = if(isVertical) height - padding else padding + colorBarHeight
-            }
+        when (verticalGravity) {
 
             Gravity.BOTTOM -> {
-                if(!isVertical) {
-                    top = if(showAlphaBar) {
+                if (!isVertical) {
+                    top = if (showAlphaBar) {
                         height - 2 * colorBarHeight - 4 * padding
                     } else {
                         height - padding - colorBarHeight
@@ -226,9 +222,9 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                 }
             }
 
-            Gravity.CENTER_VERTICAL, Gravity.FILL_VERTICAL, Gravity.CENTER -> {
-                if(!isVertical) {
-                    top = if(showAlphaBar) {
+            Gravity.CENTER_VERTICAL, Gravity.CENTER -> {
+                if (!isVertical) {
+                    top = if (showAlphaBar) {
                         height / 2 - colorBarHeight - padding - padding / 2
                     } else {
                         height / 2 - colorBarHeight / 2
@@ -240,6 +236,11 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                     top = padding
                     bottom = height - padding
                 }
+            }
+
+            else -> {
+                top = padding
+                bottom = if (isVertical) height - padding else padding + colorBarHeight
             }
         }
 
@@ -266,11 +267,11 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     private fun updateAlphaBarRect() {
         if (!showAlphaBar) return
 
-        val top = if(isVertical) colorBarRect.top else colorBarRect.bottom + 3 * padding
-        val bottom = if(isVertical) colorBarRect.bottom else top + colorBarHeight
+        val top = if (isVertical) colorBarRect.top else colorBarRect.bottom + 3 * padding
+        val bottom = if (isVertical) colorBarRect.bottom else top + colorBarHeight
 
-        val left = if(isVertical) colorBarRect.right + 3 * padding else colorBarRect.left
-        val right = if(isVertical) left + colorBarHeight else colorBarRect.right
+        val left = if (isVertical) colorBarRect.right + 3 * padding else colorBarRect.left
+        val right = if (isVertical) left + colorBarHeight else colorBarRect.right
 
         alphaBarRect.top = top
         alphaBarRect.left = left
@@ -332,7 +333,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                     else -> null
                 }
 
-                updateThumbPosition(if(isVertical) yPos else xPos)
+                updateThumbPosition(if (isVertical) yPos else xPos)
                 return true
             }
 
@@ -342,7 +343,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
                 val xPos = event.x
                 val yPos = event.y
 
-                updateThumbPosition(if(isVertical) yPos else xPos)
+                updateThumbPosition(if (isVertical) yPos else xPos)
                 return true
             }
             else -> isMoveActionForColorBar = null
@@ -356,7 +357,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
         if (newPos < padding) newPos = padding
 
-        if(isVertical) {
+        if (isVertical) {
             if (newPos > height - padding) newPos = height - padding
         } else {
             if (newPos > width - padding) newPos = width - padding
@@ -382,7 +383,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     private fun calculateColor(posColor: Float, posAlpha: Float): Int {
 
         val posAdjusted = posColor - padding
-        val percentage = if(isVertical) posAdjusted / colorBarRect.height() else posAdjusted / colorBarRect.width()
+        val percentage = if (isVertical) posAdjusted / colorBarRect.height() else posAdjusted / colorBarRect.width()
 
         var colorFirst = colorBarColors.last()
         var colorSecond = colorBarColors.last()
@@ -407,7 +408,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
 
         if (showAlphaBar) {
             val posAlphaAdjusted = posAlpha - padding
-            val percentageAlpha = 1 - if(isVertical) posAlphaAdjusted / alphaBarRect.height() else posAlphaAdjusted / alphaBarRect.width()
+            val percentageAlpha = 1 - if (isVertical) posAlphaAdjusted / alphaBarRect.height() else posAlphaAdjusted / alphaBarRect.width()
 
             alpha = (alpha * percentageAlpha).toInt()
         }
@@ -491,9 +492,9 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     }
 
     private fun setPathForColorBarThumb() {
-        if(isVertical) {
+        if (isVertical) {
             thumbPath.moveTo(colorBarRect.centerX() - colorBarRect.width() * 0.25f, thumbPos)
-            thumbPath.lineTo( colorBarRect.centerX() - colorBarRect.width() * 0.9f, thumbPos + colorBarRect.width() * 0.4f)
+            thumbPath.lineTo(colorBarRect.centerX() - colorBarRect.width() * 0.9f, thumbPos + colorBarRect.width() * 0.4f)
             thumbPath.lineTo(colorBarRect.centerX() - colorBarRect.width() * 0.9f, thumbPos - colorBarRect.width() * 0.4f)
             thumbPath.close()
 
@@ -515,9 +516,9 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     }
 
     private fun setPathForAlphaBarThumb() {
-        if(!showAlphaBar) return
+        if (!showAlphaBar) return
 
-        if(isVertical) {
+        if (isVertical) {
             thumbPath.moveTo(alphaBarRect.centerX() - alphaBarRect.width() * 0.25f, alphaThumbPos)
             thumbPath.lineTo(alphaBarRect.centerX() - alphaBarRect.width() * 0.9f, alphaThumbPos + alphaBarRect.width() * 0.4f)
             thumbPath.lineTo(alphaBarRect.centerX() - alphaBarRect.width() * 0.9f, alphaThumbPos - alphaBarRect.width() * 0.4f)
@@ -593,7 +594,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     fun setColor(newColor: Int, callListener: Boolean = true) {
         post {
             val start = padding.toInt()
-            val end = if(isVertical) {
+            val end = if (isVertical) {
                 (padding + colorBarRect.height()).toInt()
             } else {
                 (padding + colorBarRect.width()).toInt()
@@ -606,7 +607,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             var posAlpha = alphaThumbPos
             if (showAlphaBar) {
                 val alphaPositionPercentage = 1 - getAlphaFromColor(newColor) / 255f
-                posAlpha = if(isVertical) {
+                posAlpha = if (isVertical) {
                     alphaPositionPercentage * alphaBarRect.height() + start
                 } else {
                     alphaPositionPercentage * alphaBarRect.width() + start
