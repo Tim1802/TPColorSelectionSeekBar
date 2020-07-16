@@ -39,9 +39,9 @@ XML:
 Attributes:
 | Attribute                                            | Description                             | Default value(s)  |
 | -------------                                        |:-------------:                          | :-----:|
-| app:colorBarCornerRadius="8dp"                       | Corner radius of the bar                | 0px |
-| app:colorBarHeight="16dp"                            | Height of the bar                       | 60px |
-| app:colorBarBorderColor="@color/barBorderColor"      | Border color of the bar                 | #000000 |
+| app:colorBarCornerRadius="8dp"                       | Corner radius of the bar(s)             | 0px |
+| app:colorBarHeight="16dp"                            | Height of the bar(s)                    | 60px |
+| app:colorBarBorderColor="@color/barBorderColor"      | Border color of the bar(s)              | #000000 |
 | app:colorBarColors="@array/barColors"                | Colors to be displayed in the bar       | #000000, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF, #FFFFFF |
 | app:thumbBorderColor="@color/thumbBorderColor"       | Border color of the thumbnail           | #000000 |
 | app:thumbFillColor="@color/thumbFillColor"           | Fill color of the thumbnail             | #FF0000 |
