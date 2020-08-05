@@ -65,12 +65,12 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
 
         buttonSheet = findViewById(R.id.buttonShowSheet)
         buttonSheet.setOnClickListener {
-            showBottomSheet()
+            BottomSheet().show(supportFragmentManager, "bottomSheet")
         }
     }
 
     override fun onSelectedColorChanged(color: Int, viewId: Int) {
-        when(viewId) {
+        when (viewId) {
             R.id.colorBarDefault -> viewDefault.setBackgroundColor(color)
             R.id.colorBarDefaultVertical -> viewDefaultVertical.setBackgroundColor(color)
             R.id.colorBarCustomized -> viewCustomized.setBackgroundColor(color)
@@ -78,12 +78,5 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
             R.id.colorBarCustomizedAlpha -> viewCustomizedAlpha.setBackgroundColor(color)
             R.id.colorBarDefaultVerticalAlpha -> viewDefaultVerticalAlpha.setBackgroundColor(color)
         }
-    }
-
-    private fun showBottomSheet() {
-        val fragmentManager = supportFragmentManager
-
-        val sheet = BottomSheet()
-        sheet.show(fragmentManager, "bottomSheet")
     }
 }
