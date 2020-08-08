@@ -53,11 +53,18 @@ Attributes:
 
 Listener for color change:
 ```kotlin
-colorBar.setColorSelectionChangedListener(object: TPColorSelectionSeekBar.ISelectedColorChangedListener {
-    override fun onSelectedColorChanged(color: Int, viewId: Int) {
-        //TODO: do something with the new color   
-    }
-})
+colorBar.setColorSelectionChangedListener { color, viewId ->
+    //TODO: do something with the new color   
+}
+
+--- or ---
+
+private fun colorChangedListener (color: Int, viewId : Int) { 
+    //TODO: do something with the new color   
+}
+
+colorBar.setColorSelectionChangedListener(::colorChangedListener)
+
 ```
 <b>Check out the sample project if you need help or get stuck!</b>
 
@@ -69,6 +76,7 @@ colorBar.setColorSelectionChangedListener(object: TPColorSelectionSeekBar.ISelec
 | 3.0.0          | Possibility to display vertical bar(s) | Done                               | 
 | 3.1.0          | Support gravity                        | Done                               | 
 | 3.2.0          | Smaller fixes                          | Done                               | 
+| 3.3.0          | Replace interface callback with lambda | Done                               | 
 
 
 # Licence
