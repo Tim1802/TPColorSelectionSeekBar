@@ -25,7 +25,7 @@ Add the dependency:
 dependencies {
     //All your other dependencies ...
     
-    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v3.2.0'
+    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v3.3.0'
 }
 ```
 # Usage
