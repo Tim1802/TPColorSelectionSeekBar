@@ -83,7 +83,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     private var alphaThumbPos = padding
 
     private var colorBarCornerRadius = 0f
-    private var selectedColorChangedListener: ISelectedColorChangedListener? = null
+    private var selectedColorChangedListener: ((color: Int, viewId: Int) -> Unit)? = null
 
     init {
         var thumbFillColor = Color.parseColor("#FF0000")
@@ -375,7 +375,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
             updateAlphaBarShaderPaint()
         }
 
-        selectedColorChangedListener?.onSelectedColorChanged(currentColor, id)
+        selectedColorChangedListener?.invoke(currentColor, id)
 
         invalidate()
     }
@@ -428,7 +428,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         updateAlphaBarShaderPaint()
 
         if (callListener) {
-            selectedColorChangedListener?.onSelectedColorChanged(currentColor, id)
+            selectedColorChangedListener?.invoke(currentColor, id)
         }
 
         invalidate()
@@ -645,7 +645,7 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
      *
      * @param listener the listener that should get informed about a future color change
      */
-    fun setColorSelectionChangedListener(listener: ISelectedColorChangedListener?) {
+    fun setColorSelectionChangedListener(listener: ((Int, Int) -> Unit)?) {
         selectedColorChangedListener = listener
     }
 
@@ -654,10 +654,6 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
         alphaBarBackgroundBitmap = null
 
         selectedColorChangedListener = null
-    }
-
-    interface ISelectedColorChangedListener {
-        fun onSelectedColorChanged(color: Int, viewId: Int)
     }
 
     companion object {

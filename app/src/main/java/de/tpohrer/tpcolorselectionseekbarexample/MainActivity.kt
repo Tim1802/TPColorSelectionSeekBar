@@ -6,7 +6,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import de.tpohrer.tpcolorselectionseekbar.TPColorSelectionSeekBar
 
-class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColorChangedListener {
+class MainActivity : AppCompatActivity() {
     private lateinit var barDefault: TPColorSelectionSeekBar
     private lateinit var barDefaultVertical: TPColorSelectionSeekBar
     private lateinit var barDefaultVerticalAlpha: TPColorSelectionSeekBar
@@ -33,35 +33,34 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
         viewDefaultAlpha = findViewById(R.id.viewDefaultAlpha)
 
         barDefault = findViewById(R.id.colorBarDefault)
-        barDefault.setColorSelectionChangedListener(this)
+        barDefault.setColorSelectionChangedListener(::colorChangedListener)
 
-        onSelectedColorChanged(barDefault.getCurrentColor(), barDefault.id)
+        colorChangedListener(barDefault.getCurrentColor(), barDefault.id)
 
         barCustomized = findViewById(R.id.colorBarCustomized)
-        barCustomized.setColorSelectionChangedListener(this)
+        barCustomized.setColorSelectionChangedListener(::colorChangedListener)
 
-        onSelectedColorChanged(barCustomized.getCurrentColor(), barCustomized.id)
+        colorChangedListener(barCustomized.getCurrentColor(), barCustomized.id)
 
         barDefaultAlpha = findViewById(R.id.colorBarDefaultAlpha)
-        barDefaultAlpha.setColorSelectionChangedListener(this)
+        barDefaultAlpha.setColorSelectionChangedListener(::colorChangedListener)
 
-        onSelectedColorChanged(barDefaultAlpha.getCurrentColor(), barDefaultAlpha.id)
+        colorChangedListener(barDefaultAlpha.getCurrentColor(), barDefaultAlpha.id)
 
         barCustomizedAlpha = findViewById(R.id.colorBarCustomizedAlpha)
-        barCustomizedAlpha.setColorSelectionChangedListener(this)
+        barCustomizedAlpha.setColorSelectionChangedListener(::colorChangedListener)
 
-        onSelectedColorChanged(barCustomizedAlpha.getCurrentColor(), barCustomizedAlpha.id)
+        colorChangedListener(barCustomizedAlpha.getCurrentColor(), barCustomizedAlpha.id)
 
         barDefaultVertical = findViewById(R.id.colorBarDefaultVertical)
-        barDefaultVertical.setColorSelectionChangedListener(this)
+        barDefaultVertical.setColorSelectionChangedListener(::colorChangedListener)
 
-        onSelectedColorChanged(barDefaultVertical.getCurrentColor(), barDefaultVertical.id)
+        colorChangedListener(barDefaultVertical.getCurrentColor(), barDefaultVertical.id)
 
         barDefaultVerticalAlpha = findViewById(R.id.colorBarDefaultVerticalAlpha)
-        barDefaultVerticalAlpha.setColorSelectionChangedListener(this)
+        barDefaultVerticalAlpha.setColorSelectionChangedListener(::colorChangedListener)
 
-        onSelectedColorChanged(barDefaultVerticalAlpha.getCurrentColor(), barDefaultVerticalAlpha.id)
-
+        colorChangedListener(barDefaultVerticalAlpha.getCurrentColor(), barDefaultVerticalAlpha.id)
 
         buttonSheet = findViewById(R.id.buttonShowSheet)
         buttonSheet.setOnClickListener {
@@ -69,13 +68,13 @@ class MainActivity : AppCompatActivity(), TPColorSelectionSeekBar.ISelectedColor
         }
     }
 
-    override fun onSelectedColorChanged(color: Int, viewId: Int) {
+    private fun colorChangedListener (color: Int, viewId : Int) {
         when (viewId) {
-            R.id.colorBarDefault -> viewDefault.setBackgroundColor(color)
-            R.id.colorBarDefaultVertical -> viewDefaultVertical.setBackgroundColor(color)
-            R.id.colorBarCustomized -> viewCustomized.setBackgroundColor(color)
-            R.id.colorBarDefaultAlpha -> viewDefaultAlpha.setBackgroundColor(color)
-            R.id.colorBarCustomizedAlpha -> viewCustomizedAlpha.setBackgroundColor(color)
+            R.id.colorBarDefault              -> viewDefault.setBackgroundColor(color)
+            R.id.colorBarDefaultVertical      -> viewDefaultVertical.setBackgroundColor(color)
+            R.id.colorBarCustomized           -> viewCustomized.setBackgroundColor(color)
+            R.id.colorBarDefaultAlpha         -> viewDefaultAlpha.setBackgroundColor(color)
+            R.id.colorBarCustomizedAlpha      -> viewCustomizedAlpha.setBackgroundColor(color)
             R.id.colorBarDefaultVerticalAlpha -> viewDefaultVerticalAlpha.setBackgroundColor(color)
         }
     }
