@@ -25,7 +25,7 @@ Add the dependency:
 dependencies {
     //All your other dependencies ...
     
-    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v3.4.0'
+    implementation 'com.github.Tim1802:TPColorSelectionSeekBar:v3.5.0'
 }
 ```
 # Usage
@@ -78,6 +78,7 @@ colorBar.setColorSelectionChangedListener(::colorChangedListener)
 | 3.2.0          | Smaller fixes                          | Done                               | 
 | 3.3.0          | Replace interface callback with lambda | Done                               | 
 | 3.4.0          | Update to latest Kotlin version        | Done                               |
+| 3.5.0          | Fix for color bar display              | Done                               |
 
 
 # Licence

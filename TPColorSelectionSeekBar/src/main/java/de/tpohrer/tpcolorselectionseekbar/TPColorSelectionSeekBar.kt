@@ -253,8 +253,8 @@ class TPColorSelectionSeekBar @JvmOverloads constructor(ctx: Context, attributeS
     private fun updateColorBarShaderPaint() {
         val x0 = colorBarRect.left
         val y0 = colorBarRect.top
-        val x1 = colorBarRect.right
-        val y1 = colorBarRect.bottom
+        val x1 = if (isVertical) colorBarRect.left else colorBarRect.right
+        val y1 = if (isVertical) colorBarRect.bottom else colorBarRect.top
 
         colorBarPaint.shader = LinearGradient(
             x0, y0, x1, y1,
