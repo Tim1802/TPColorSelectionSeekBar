@@ -78,7 +78,7 @@ colorBar.setColorSelectionChangedListener(::colorChangedListener)
 | 3.2.0          | Smaller fixes                          | Done                               | 
 | 3.3.0          | Replace interface callback with lambda | Done                               | 
 | 3.4.0          | Update to latest Kotlin version        | Done                               |
-| 3.5.0          | Fix for color bar display              | Done                               |
+| 3.5.0          | Fix display of color bar               | Done                               |
 
 
 # Licence
