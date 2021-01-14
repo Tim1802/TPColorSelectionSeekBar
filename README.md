@@ -1,16 +1,14 @@
 # TPColorSelectionSeekBar [![](https://jitpack.io/v/Tim1802/TPColorSelectionSeekBar.svg)](https://jitpack.io/#Tim1802/TPColorSelectionSeekBar)
 
 ## Default
-<div>
-    <img src="Design/DemoDefault.gif" width=400>
-    <img src="Design/DemoAlphaDefault.gif" width=400>  
-</div>
+<img src="Design/DemoDefault.gif" width=400>
+<img src="Design/DemoAlphaDefault.gif" width=400>  
+
 
 ## Customized
-<div>
-    <img src="Design/DemoCustom.gif" width=400>
-    <img src="Design/DemoAlphaCustom.gif" width=400>  
-</div>
+<img src="Design/DemoCustom.gif" width=400>
+<img src="Design/DemoAlphaCustom.gif" width=400>  
+
 
 # Download
 Make sure that you have added the JitPack repository to your root build.gradle file:
