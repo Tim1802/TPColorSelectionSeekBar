@@ -1,11 +1,11 @@
 # TPColorSelectionSeekBar [![](https://jitpack.io/v/Tim1802/TPColorSelectionSeekBar.svg)](https://jitpack.io/#Tim1802/TPColorSelectionSeekBar)
 
-## Default
+## Default Style
 <img src="Design/DemoDefault.gif" width=400>
 <img src="Design/DemoAlphaDefault.gif" width=400>  
 
 
-## Customized
+## Customized Style
 <img src="Design/DemoCustom.gif" width=400>
 <img src="Design/DemoAlphaCustom.gif" width=400>  
 
